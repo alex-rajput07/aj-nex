@@ -1,59 +1,80 @@
-CREATE TABLE profiles (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    role VARCHAR(20) CHECK (role IN ('ADMIN', 'MANAGER', 'PRINCIPAL', 'TEACHER', 'PARENT')) NOT NULL,
-    staff_id INTEGER,
-    student_id INTEGER
+-- supabase/schema.sql
+-- Create minimal school-related schema (non-destructive: IF NOT EXISTS)
+
+-- Ensure uuid-ossp or pgcrypto usually available; we rely on uuid in auth so keep simple.
+
+-- profiles
+CREATE TABLE IF NOT EXISTS public.profiles (
+  id serial PRIMARY KEY,
+  name varchar,
+  role varchar CHECK (role::text = ANY (ARRAY['ADMIN','MANAGER','PRINCIPAL','TEACHER','PARENT']::text[])),
+  staff_id integer,
+  student_id integer,
+  user_id uuid  -- links to auth.users.id in Supabase auth
 );
 
-CREATE TABLE students (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    class_id INTEGER REFERENCES classes(id),
-    parent_id INTEGER REFERENCES profiles(id),
-    date_of_birth DATE,
-    gender VARCHAR(10)
+-- classes
+CREATE TABLE IF NOT EXISTS public.classes (
+  id serial PRIMARY KEY,
+  name varchar NOT NULL,
+  section varchar,
+  teacher_id integer REFERENCES public.profiles(id) ON DELETE SET NULL
 );
 
-CREATE TABLE classes (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
-    section VARCHAR(10)
+-- students
+CREATE TABLE IF NOT EXISTS public.students (
+  id serial PRIMARY KEY,
+  name varchar NOT NULL,
+  class_id integer REFERENCES public.classes(id) ON DELETE SET NULL,
+  parent_id integer REFERENCES public.profiles(id) ON DELETE SET NULL,
+  date_of_birth date,
+  gender varchar
 );
 
-CREATE TABLE attendance (
-    id SERIAL PRIMARY KEY,
-    student_id INTEGER REFERENCES students(id),
-    date DATE NOT NULL,
-    status VARCHAR(10) CHECK (status IN ('PRESENT', 'ABSENT'))
+-- attendance
+CREATE TABLE IF NOT EXISTS public.attendance (
+  id serial PRIMARY KEY,
+  student_id integer REFERENCES public.students(id) ON DELETE CASCADE,
+  date date NOT NULL,
+  status varchar CHECK (status::text = ANY (ARRAY['PRESENT','ABSENT']::text[]))
 );
 
-CREATE TABLE grades (
-    id SERIAL PRIMARY KEY,
-    student_id INTEGER REFERENCES students(id),
-    subject VARCHAR(50) NOT NULL,
-    grade VARCHAR(2) NOT NULL
+-- grades
+CREATE TABLE IF NOT EXISTS public.grades (
+  id serial PRIMARY KEY,
+  student_id integer REFERENCES public.students(id) ON DELETE CASCADE,
+  subject varchar NOT NULL,
+  grade varchar NOT NULL
 );
 
-CREATE TABLE fees (
-    id SERIAL PRIMARY KEY,
-    student_id INTEGER REFERENCES students(id),
-    amount DECIMAL(10, 2) NOT NULL,
-    status VARCHAR(10) CHECK (status IN ('paid', 'pending', 'defaulter')),
-    due_date DATE
+-- fees
+CREATE TABLE IF NOT EXISTS public.fees (
+  id serial PRIMARY KEY,
+  student_id integer REFERENCES public.students(id) ON DELETE CASCADE,
+  amount numeric NOT NULL,
+  status varchar CHECK (status::text = ANY (ARRAY['paid','pending','defaulter']::text[])),
+  due_date date
 );
 
-CREATE TABLE assets (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    quantity INTEGER NOT NULL,
-    description TEXT
+-- assets
+CREATE TABLE IF NOT EXISTS public.assets (
+  id serial PRIMARY KEY,
+  name varchar NOT NULL,
+  quantity integer NOT NULL DEFAULT 0,
+  description text
 );
 
-CREATE TABLE messages (
-    id SERIAL PRIMARY KEY,
-    sender_id INTEGER REFERENCES profiles(id),
-    receiver_id INTEGER REFERENCES profiles(id),
-    content TEXT NOT NULL,
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- messages
+CREATE TABLE IF NOT EXISTS public.messages (
+  id serial PRIMARY KEY,
+  sender_id integer REFERENCES public.profiles(id) ON DELETE SET NULL,
+  receiver_id integer REFERENCES public.profiles(id) ON DELETE SET NULL,
+  content text,
+  "timestamp" timestamp DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Helpful indexes
+CREATE INDEX IF NOT EXISTS idx_students_class_id ON public.students(class_id);
+CREATE INDEX IF NOT EXISTS idx_attendance_student_date ON public.attendance(student_id, date);
+CREATE INDEX IF NOT EXISTS idx_grades_student ON public.grades(student_id);
+CREATE INDEX IF NOT EXISTS idx_fees_student ON public.fees(student_id);
