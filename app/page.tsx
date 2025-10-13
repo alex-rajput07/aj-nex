@@ -1,12 +1,29 @@
-import React from 'react';
+import { supabase } from "@/utils/supabase/server";
 
-const HomePage = () => {
-    return (
-        <div className="flex flex-col items-center justify-center h-screen">
-            <h1 className="text-4xl font-bold">Welcome to AJ ERP</h1>
-            <p className="mt-4 text-lg">Your comprehensive school management system.</p>
-        </div>
-    );
-};
+export const dynamic = "force-dynamic";
 
-export default HomePage;
+export default async function HomePage() {
+  const { data, error } = await supabase.from("classes").select("*");
+
+  if (error) {
+    console.error("Supabase error:", error.message);
+  }
+
+  return (
+    <main className="p-10 text-center">
+      <h1 className="text-3xl font-bold mb-5 text-blue-600">Welcome to AJ ERP</h1>
+
+      {error && <p className="text-red-500">Database Error: {error.message}</p>}
+
+      {data && data.length > 0 ? (
+        <ul className="space-y-2">
+          {data.map((cls: any) => (
+            <li key={cls.id} className="text-lg">{cls.name}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>No data found in “classes” table.</p>
+      )}
+    </main>
+  );
+}

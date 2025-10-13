@@ -1,52 +1,33 @@
--- supabase/rls.sql
--- Enable RLS and create safe policies. Policies will reference auth.uid() safely via SELECT.
+-- ...existing code...
 
--- Note: These policies assume auth.uid() returns the user's UUID and that profiles.user_id stores that UUID.
-
--- Helper to get current auth uid (wrap SELECT for planner stability)
--- Not strictly necessary but helpful in policies
-CREATE OR REPLACE FUNCTION public.current_auth_uid() RETURNS uuid LANGUAGE sql STABLE AS $$
-  SELECT auth.uid();
-$$;
-
-REVOKE EXECUTE ON FUNCTION public.current_auth_uid() FROM anon, authenticated;
-
--- Enable RLS on tables that contain user-linked data (profiles, messages)
-ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
-
--- Policies for profiles: users can read and update their own profile (matching user_id), and authenticated users can insert their own
+-- Profiles policies
+DROP POLICY IF EXISTS "profiles_select_own" ON public.profiles;
 CREATE POLICY "profiles_select_own" ON public.profiles
   FOR SELECT
   TO authenticated
   USING ((SELECT public.current_auth_uid()) IS NOT NULL AND user_id = (SELECT public.current_auth_uid()));
 
+DROP POLICY IF EXISTS "profiles_insert_self" ON public.profiles;
 CREATE POLICY "profiles_insert_self" ON public.profiles
   FOR INSERT
   TO authenticated
   WITH CHECK (user_id = (SELECT public.current_auth_uid()));
 
+DROP POLICY IF EXISTS "profiles_update_own" ON public.profiles;
 CREATE POLICY "profiles_update_own" ON public.profiles
   FOR UPDATE
   TO authenticated
   USING (user_id = (SELECT public.current_auth_uid()))
   WITH CHECK (user_id = (SELECT public.current_auth_uid()));
 
--- Messages: allow sender to insert messages where sender_id matches their profile id, allow receiver and sender to read messages
--- First a helper to get profile id by auth.uid()
-CREATE OR REPLACE FUNCTION public.get_profile_id_by_auth_uid() RETURNS integer LANGUAGE sql STABLE AS $$
-  SELECT id FROM public.profiles WHERE user_id = (SELECT public.current_auth_uid()) LIMIT 1;
-$$;
-
-REVOKE EXECUTE ON FUNCTION public.get_profile_id_by_auth_uid() FROM anon, authenticated;
-
-ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
-
+-- Messages policies
+DROP POLICY IF EXISTS "messages_insert_sender" ON public.messages;
 CREATE POLICY "messages_insert_sender" ON public.messages
   FOR INSERT
   TO authenticated
   WITH CHECK (sender_id = public.get_profile_id_by_auth_uid());
 
+DROP POLICY IF EXISTS "messages_select_participant" ON public.messages;
 CREATE POLICY "messages_select_participant" ON public.messages
   FOR SELECT
   TO authenticated
@@ -55,22 +36,26 @@ CREATE POLICY "messages_select_participant" ON public.messages
     OR receiver_id = public.get_profile_id_by_auth_uid()
   );
 
+DROP POLICY IF EXISTS "messages_update_sender_only" ON public.messages;
 CREATE POLICY "messages_update_sender_only" ON public.messages
   FOR UPDATE
   TO authenticated
   USING (sender_id = public.get_profile_id_by_auth_uid())
   WITH CHECK (sender_id = public.get_profile_id_by_auth_uid());
 
--- For other tables that are not tied to auth.uid(), we can allow authenticated users general access or keep RLS disabled.
--- Example: allow authenticated users to SELECT from classes and students
-ALTER TABLE public.classes ENABLE ROW LEVEL SECURITY;
+-- Classes policies
+DROP POLICY IF EXISTS "allow_public_read" ON public.classes;
+CREATE POLICY "allow_public_read" ON public.classes FOR SELECT TO public USING (true);
+
+DROP POLICY IF EXISTS "classes_select_auth" ON public.classes;
 CREATE POLICY "classes_select_auth" ON public.classes FOR SELECT TO authenticated USING (true);
 
-ALTER TABLE public.students ENABLE ROW LEVEL SECURITY;
+-- Students policies
+DROP POLICY IF EXISTS "students_select_auth" ON public.students;
 CREATE POLICY "students_select_auth" ON public.students FOR SELECT TO authenticated USING (true);
 
--- Attendance/grades/fees: restrict based on student->parent relation for parents, or allow authenticated users for read (adjust for your needs)
-ALTER TABLE public.attendance ENABLE ROW LEVEL SECURITY;
+-- Attendance policies
+DROP POLICY IF EXISTS "attendance_select_parent_or_teacher" ON public.attendance;
 CREATE POLICY "attendance_select_parent_or_teacher" ON public.attendance
   FOR SELECT TO authenticated
   USING (
@@ -81,7 +66,8 @@ CREATE POLICY "attendance_select_parent_or_teacher" ON public.attendance
     )
   );
 
-ALTER TABLE public.grades ENABLE ROW LEVEL SECURITY;
+-- Grades policies
+DROP POLICY IF EXISTS "grades_select_parent_or_teacher" ON public.grades;
 CREATE POLICY "grades_select_parent_or_teacher" ON public.grades
   FOR SELECT TO authenticated
   USING (
@@ -92,7 +78,8 @@ CREATE POLICY "grades_select_parent_or_teacher" ON public.grades
     )
   );
 
-ALTER TABLE public.fees ENABLE ROW LEVEL SECURITY;
+-- Fees policies
+DROP POLICY IF EXISTS "fees_select_parent" ON public.fees;
 CREATE POLICY "fees_select_parent" ON public.fees
   FOR SELECT TO authenticated
   USING (
@@ -103,4 +90,4 @@ CREATE POLICY "fees_select_parent" ON public.fees
     )
   );
 
--- Note: You may want to create INSERT/UPDATE policies for these tables depending on your app workflows.
+-- ...existing code...
