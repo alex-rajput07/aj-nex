@@ -1,93 +1,130 @@
--- ...existing code...
+-- ===============================
+-- RLS FOR SCHOOL ERP SYSTEM
+-- ===============================
 
--- Profiles policies
-DROP POLICY IF EXISTS "profiles_select_own" ON public.profiles;
-CREATE POLICY "profiles_select_own" ON public.profiles
-  FOR SELECT
-  TO authenticated
-  USING ((SELECT public.current_auth_uid()) IS NOT NULL AND user_id = (SELECT public.current_auth_uid()));
+-- ENABLE ROW LEVEL SECURITY
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE students ENABLE ROW LEVEL SECURITY;
+ALTER TABLE teachers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE parents ENABLE ROW LEVEL SECURITY;
+ALTER TABLE attendance ENABLE ROW LEVEL SECURITY;
+ALTER TABLE fees ENABLE ROW LEVEL SECURITY;
 
-DROP POLICY IF EXISTS "profiles_insert_self" ON public.profiles;
-CREATE POLICY "profiles_insert_self" ON public.profiles
-  FOR INSERT
-  TO authenticated
-  WITH CHECK (user_id = (SELECT public.current_auth_uid()));
+-- ===============================
+-- USERS TABLE POLICIES
+-- ===============================
 
-DROP POLICY IF EXISTS "profiles_update_own" ON public.profiles;
-CREATE POLICY "profiles_update_own" ON public.profiles
-  FOR UPDATE
-  TO authenticated
-  USING (user_id = (SELECT public.current_auth_uid()))
-  WITH CHECK (user_id = (SELECT public.current_auth_uid()));
+-- Drop old policies (idempotent)
+DROP POLICY IF EXISTS "Users can view their own data" ON users;
+DROP POLICY IF EXISTS "Admins can manage all users" ON users;
 
--- Messages policies
-DROP POLICY IF EXISTS "messages_insert_sender" ON public.messages;
-CREATE POLICY "messages_insert_sender" ON public.messages
-  FOR INSERT
-  TO authenticated
-  WITH CHECK (sender_id = public.get_profile_id_by_auth_uid());
+-- Users can view their own data
+CREATE POLICY "Users can view their own data"
+  ON users FOR SELECT
+  USING (auth.uid() = id);
 
-DROP POLICY IF EXISTS "messages_select_participant" ON public.messages;
-CREATE POLICY "messages_select_participant" ON public.messages
-  FOR SELECT
-  TO authenticated
-  USING (
-    sender_id = public.get_profile_id_by_auth_uid()
-    OR receiver_id = public.get_profile_id_by_auth_uid()
-  );
+-- Admins can manage all users
+CREATE POLICY "Admins can manage all users"
+  ON users FOR ALL
+  USING (EXISTS (SELECT 1 FROM users u WHERE u.id = auth.uid() AND u.role = 'admin'));
 
-DROP POLICY IF EXISTS "messages_update_sender_only" ON public.messages;
-CREATE POLICY "messages_update_sender_only" ON public.messages
-  FOR UPDATE
-  TO authenticated
-  USING (sender_id = public.get_profile_id_by_auth_uid())
-  WITH CHECK (sender_id = public.get_profile_id_by_auth_uid());
+-- ===============================
+-- STUDENTS TABLE POLICIES
+-- ===============================
 
--- Classes policies
-DROP POLICY IF EXISTS "allow_public_read" ON public.classes;
-CREATE POLICY "allow_public_read" ON public.classes FOR SELECT TO public USING (true);
+DROP POLICY IF EXISTS "Students can see their own profile" ON students;
+DROP POLICY IF EXISTS "Teachers and Admins can view all students" ON students;
 
-DROP POLICY IF EXISTS "classes_select_auth" ON public.classes;
-CREATE POLICY "classes_select_auth" ON public.classes FOR SELECT TO authenticated USING (true);
+-- Students can view their own profile
+CREATE POLICY "Students can see their own profile"
+  ON students FOR SELECT
+  USING (user_id = auth.uid());
 
--- Students policies
-DROP POLICY IF EXISTS "students_select_auth" ON public.students;
-CREATE POLICY "students_select_auth" ON public.students FOR SELECT TO authenticated USING (true);
+-- Teachers and Admins can view all students
+CREATE POLICY "Teachers and Admins can view all students"
+  ON students FOR SELECT
+  USING (EXISTS (SELECT 1 FROM users u WHERE u.id = auth.uid() AND u.role IN ('teacher', 'admin')));
 
--- Attendance policies
-DROP POLICY IF EXISTS "attendance_select_parent_or_teacher" ON public.attendance;
-CREATE POLICY "attendance_select_parent_or_teacher" ON public.attendance
-  FOR SELECT TO authenticated
+-- ===============================
+-- TEACHERS TABLE POLICIES
+-- ===============================
+
+DROP POLICY IF EXISTS "Teachers can view and edit their own profile" ON teachers;
+DROP POLICY IF EXISTS "Admins can manage teachers" ON teachers;
+
+-- Teachers can view and edit their own profile
+CREATE POLICY "Teachers can view and edit their own profile"
+  ON teachers FOR SELECT
+  USING (user_id = auth.uid());
+
+-- Admins can manage teachers
+CREATE POLICY "Admins can manage teachers"
+  ON teachers FOR ALL
+  USING (EXISTS (SELECT 1 FROM users u WHERE u.id = auth.uid() AND u.role = 'admin'));
+
+-- ===============================
+-- PARENTS TABLE POLICIES
+-- ===============================
+
+DROP POLICY IF EXISTS "Parents can view their linked student data" ON parents;
+
+-- Parents can view their linked student data
+CREATE POLICY "Parents can view their linked student data"
+  ON parents FOR SELECT
+  USING (user_id = auth.uid());
+
+-- ===============================
+-- ATTENDANCE TABLE POLICIES
+-- ===============================
+
+DROP POLICY IF EXISTS "Teachers can mark attendance" ON attendance;
+DROP POLICY IF EXISTS "Students and Parents can view attendance" ON attendance;
+
+-- Teachers can mark attendance (INSERT)
+CREATE POLICY "Teachers can mark attendance"
+  ON attendance FOR INSERT
+  WITH CHECK (EXISTS (SELECT 1 FROM users u WHERE u.id = auth.uid() AND u.role = 'teacher'));
+
+-- Students and Parents can view attendance
+CREATE POLICY "Students and Parents can view attendance"
+  ON attendance FOR SELECT
   USING (
     EXISTS (
-      SELECT 1 FROM public.profiles p
-      WHERE p.user_id = (SELECT public.current_auth_uid())
-      AND (p.id = (SELECT parent_id FROM public.students s WHERE s.id = attendance.student_id))
+      SELECT 1 FROM students s
+      WHERE s.id = attendance.student_id
+      AND s.user_id = auth.uid()
+    )
+    OR EXISTS (
+      SELECT 1 FROM parents p
+      WHERE p.user_id = auth.uid()
+      AND p.student_id = attendance.student_id
     )
   );
 
--- Grades policies
-DROP POLICY IF EXISTS "grades_select_parent_or_teacher" ON public.grades;
-CREATE POLICY "grades_select_parent_or_teacher" ON public.grades
-  FOR SELECT TO authenticated
+-- ===============================
+-- FEES TABLE POLICIES
+-- ===============================
+
+DROP POLICY IF EXISTS "Students and Parents can view fees" ON fees;
+DROP POLICY IF EXISTS "Admins can update all fees" ON fees;
+
+-- Students and Parents can view fees
+CREATE POLICY "Students and Parents can view fees"
+  ON fees FOR SELECT
   USING (
     EXISTS (
-      SELECT 1 FROM public.profiles p
-      WHERE p.user_id = (SELECT public.current_auth_uid())
-      AND (p.id = (SELECT parent_id FROM public.students s WHERE s.id = grades.student_id))
+      SELECT 1 FROM students s
+      WHERE s.id = fees.student_id
+      AND s.user_id = auth.uid()
+    )
+    OR EXISTS (
+      SELECT 1 FROM parents p
+      WHERE p.user_id = auth.uid()
+      AND p.student_id = fees.student_id
     )
   );
 
--- Fees policies
-DROP POLICY IF EXISTS "fees_select_parent" ON public.fees;
-CREATE POLICY "fees_select_parent" ON public.fees
-  FOR SELECT TO authenticated
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.profiles p
-      WHERE p.user_id = (SELECT public.current_auth_uid())
-      AND (p.id = (SELECT parent_id FROM public.students s WHERE s.id = fees.student_id))
-    )
-  );
-
--- ...existing code...
+-- Admins can update all fees
+CREATE POLICY "Admins can update all fees"
+  ON fees FOR ALL
+  USING (EXISTS (SELECT 1 FROM users u WHERE u.id = auth.uid() AND u.role = 'admin'));
