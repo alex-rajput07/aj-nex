@@ -1,0 +1,11 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/ai-summary/route": "app/api/ai-summary/route.js",
+  "/login/page": "app/login/page.js",
+  "/page": "app/page.js",
+  "/dashboard/manager/page": "app/dashboard/manager/page.js",
+  "/dashboard/teacher/page": "app/dashboard/teacher/page.js",
+  "/dashboard/parent/page": "app/dashboard/parent/page.js",
+  "/dashboard/admin/page": "app/dashboard/admin/page.js",
+  "/dashboard/principal/page": "app/dashboard/principal/page.js"
+}

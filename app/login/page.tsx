@@ -1,64 +1,91 @@
-"use client";
+// app/login/page.tsx
+'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClientSupabaseClient } from '@/utils/supabase/client';
+import React from 'react';
 
-const LoginPage = () => {
-  const supabase = createClientSupabaseClient();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
+export default function LoginPage() {
   const router = useRouter();
+  const [role, setRole] = useState('admin');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [msg, setMsg] = useState('');
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Keep the form from refreshing the page
-    const { error } = await supabase.auth.signInWithPassword({ // Corrected method
-      email,
-      password,
-    });
+  // Mock credentials (replace with real API later)
+  const credentials: { [key: string]: any } = {
+    admin: { username: 'admin', password: 'admin123' },
+    teacher: { username: 'teacher', password: 'teacher123' },
+    student: { username: 'student', password: 'student123' },
+    parent: { username: 'parent', password: 'parent123' },
+  };
 
-    if (error) {
-      setError(error.message);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMsg('');
+
+    if (!username || !password) {
+      setMsg('Please fill both fields.');
+      return;
+    }
+
+    const user = credentials[role];
+    if (!user) {
+      setMsg('Invalid role selected.');
+      return;
+    }
+
+    if (username === user.username && password === user.password) {
+      // Save a small token to sessionStorage on client — safe because inside event handler / client component
+      try {
+        sessionStorage.setItem('erp_role', role);
+      } catch (err) {
+        // sessionStorage may not be available in some contexts; ignore safely
+      }
+      // navigate to role dashboard
+      router.push(`/${role}-dashboard`);
     } else {
-      router.push('/dashboard'); // Redirect to the dashboard after successful login
+      setMsg('Invalid credentials.');
     }
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <form onSubmit={handleLogin} className="bg-white p-6 rounded shadow-md w-80">
-        <h2 className="text-2xl font-bold mb-4">Login</h2>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-            required
-            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-            required
-            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-        >
-          Login
-        </button>
+    <div style={{ padding: 24, maxWidth: 520, margin: '24px auto' }}>
+      <h1>Login — AJ ERP</h1>
+      <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 12 }}>
+        <label>
+          Role
+          <select value={role} onChange={(e) => setRole(e.target.value)} style={{ width: '100%', padding: 8 }}>
+            <option value="admin">Admin</option>
+            <option value="teacher">Teacher</option>
+            <option value="student">Student</option>
+            <option value="parent">Parent</option>
+          </select>
+        </label>
+
+        <label>
+          Username
+          <input value={username} onChange={(e) => setUsername(e.target.value)} style={{ width: '100%', padding: 8 }} />
+        </label>
+
+        <label>
+          Password
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} style={{ width: '100%', padding: 8 }} />
+        </label>
+
+        <button type="submit" style={{ padding: 10, background: '#111827', color: '#fff', borderRadius: 6 }}>Login</button>
+        {msg && <div style={{ color: 'red' }}>{msg}</div>}
       </form>
+
+      <div style={{ marginTop: 20 }}>
+        <strong>Test accounts:</strong>
+        <ul>
+          <li>admin / admin123</li>
+          <li>teacher / teacher123</li>
+          <li>student / student123</li>
+          <li>parent / parent123</li>
+        </ul>
+      </div>
     </div>
   );
-};
-
-export default LoginPage;
+}

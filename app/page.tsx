@@ -1,29 +1,23 @@
-import { supabase } from "@/utils/supabase/server";
+// app/page.tsx
+import Link from 'next/link';
+import React from 'react';
 
-export const dynamic = "force-dynamic";
-
-export default async function HomePage() {
-  const { data, error } = await supabase.from("classes").select("*");
-
-  if (error) {
-    console.error("Supabase error:", error.message);
-  }
-
+export default function Home() {
   return (
-    <main className="p-10 text-center">
-      <h1 className="text-3xl font-bold mb-5 text-blue-600">Welcome to AJ ERP</h1>
+    <main style={{ padding: 24 }}>
+      <h1 style={{ fontSize: 28 }}>AJ School ERP</h1>
+      <p>Welcome to the school ERP. Click below to go to the Login page.</p>
+      <div style={{ marginTop: 16 }}>
+        <Link href="/login" style={{ padding: 10, background: '#2563eb', color: '#fff', borderRadius: 6 }}>Go to Login</Link>
+      </div>
 
-      {error && <p className="text-red-500">Database Error: {error.message}</p>}
-
-      {data && data.length > 0 ? (
-        <ul className="space-y-2">
-          {data.map((cls: any) => (
-            <li key={cls.id} className="text-lg">{cls.name}</li>
-          ))}
+      <section style={{ marginTop: 28 }}>
+        <h2>Quick Info</h2>
+        <ul>
+          <li>Roles supported: admin, teacher, student, parent</li>
+          <li>Login uses mock credentials locally (see README)</li>
         </ul>
-      ) : (
-        <p>No data found in “classes” table.</p>
-      )}
+      </section>
     </main>
   );
 }

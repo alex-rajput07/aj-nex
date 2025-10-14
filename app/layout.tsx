@@ -1,17 +1,20 @@
-import React from 'react';
+// app/layout.tsx
 import './globals.css';
+import React from 'react';
 
-const RootLayout = ({ children }: { children: React.ReactNode }) => {
+export const metadata = {
+  title: 'AJ School ERP',
+  description: 'School ERP - Dashboard for Admin/Teacher/Student/Parent',
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <head>
-        <title>AJ ERP - School Management System</title>
-      </head>
       <body>
-        <main>{children}</main>
+        <div style={{ fontFamily: 'system-ui, sans-serif' }}>
+          {children}
+        </div>
       </body>
     </html>
   );
-};
-
-export default RootLayout;
+}
