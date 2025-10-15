@@ -1,9 +1,9 @@
 // app/dashboard/parent/layout.tsx
-import { createClient } from "@/src/utils/supabase/server";
+import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { Home, User, Wallet, MessageSquare } from "lucide-react";
 
-import DashboardLayout from "@/app/components/DashboardLayout";
+import DashboardLayout from "../../components/DashboardLayout";
 import { NavItem } from "@/app/components/Sidebar";
 
 export default async function ParentDashboardLayout({ children }: { children: React.ReactNode }) {

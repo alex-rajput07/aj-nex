@@ -1,11 +1,12 @@
-// app/dashboard/parent/page.tsx
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/app/components/ui/Card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/app/components/ui/Table";
-import { Badge } from "@/app/components/ui/Badge";
-import { Button } from "@/app/components/ui/Button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/Avatar";
+export const dynamic = 'force-dynamic';
+
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../components/ui/Card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/Table";
+import { Badge } from "../../components/ui/Badge";
+import { Button } from "../../components/ui/Button";
+import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/Avatar";
 import { AlertCircle, CheckCircle, Bell } from 'lucide-react';
 
 // Mock Data

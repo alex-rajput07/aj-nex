@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { School } from "lucide-react";
 
-import { cn } from "@/src/utils/cn";
+import { cn } from "@/utils/cn";
 import { Button } from "@/app/components/ui/Button";
 
 export interface NavItem {

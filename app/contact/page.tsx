@@ -1,13 +1,13 @@
 // app/contact/page.tsx
 "use client";
 
-import Header from "@/app/components/Header";
-import Footer from "@/app/components/Footer";
-import { Button } from "@/app/components/ui/Button";
-import { Input } from "@/app/components/ui/Input";
-import { Label } from "@/app/components/ui/Label";
-import { Textarea } from "@/app/components/ui/Textarea"; // Will create this component
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/app/components/ui/Card";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
+import { Label } from "../components/ui/Label";
+import { Textarea } from "../components/ui/Textarea";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../components/ui/Card";
 
 export default function ContactPage() {
     const handleSubmit = (e: React.FormEvent) => {

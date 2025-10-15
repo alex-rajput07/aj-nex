@@ -5,10 +5,10 @@ import Link from "next/link";
 import { Menu, School } from "lucide-react";
 import { useState } from "react";
 
-import { Button } from "@/app/components/ui/Button";
-import { Sheet, SheetContent, SheetTrigger } from "@/app/components/ui/Sheet";
-import { UserNav } from "@/app/components/UserNav";
-import { Sidebar, NavItem } from "@/app/components/Sidebar";
+import { Button } from "./ui/Button";
+import { Sheet, SheetContent, SheetTrigger } from "./ui/Sheet";
+import { UserNav } from "./UserNav";
+import { Sidebar, NavItem } from "./Sidebar";
 
 interface DashboardLayoutProps {
     user: any; // Replace with a proper user type

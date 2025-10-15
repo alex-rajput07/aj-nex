@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 // app/reset-password/page.tsx
 'use client';
 

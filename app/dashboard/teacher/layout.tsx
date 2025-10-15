@@ -1,9 +1,9 @@
 // app/dashboard/teacher/layout.tsx
-import { createClient } from "@/src/utils/supabase/server";
+import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { Home, Calendar, BookOpen, MessageSquare } from "lucide-react";
 
-import DashboardLayout from "@/app/components/DashboardLayout";
+import DashboardLayout from "../../components/DashboardLayout";
 import { NavItem } from "@/app/components/Sidebar";
 
 export default async function TeacherDashboardLayout({ children }: { children: React.ReactNode }) {

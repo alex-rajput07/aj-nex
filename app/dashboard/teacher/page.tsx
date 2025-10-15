@@ -1,9 +1,11 @@
+export const dynamic = 'force-dynamic';
+
 // app/dashboard/teacher/page.tsx
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/app/components/ui/Card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/app/components/ui/Table";
-import { Badge } from "@/app/components/ui/Badge";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../components/ui/Card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/Table";
+import { Badge } from "../../components/ui/Badge";
 import { Calendar, Clock, Users, Megaphone } from 'lucide-react';
 
 // Mock Data

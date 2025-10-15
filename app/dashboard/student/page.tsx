@@ -1,10 +1,11 @@
-// app/dashboard/student/page.tsx
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/app/components/ui/Card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/app/components/ui/Table";
-import { Badge } from "@/app/components/ui/Badge";
-import { Progress } from "@/app/components/ui/Progress"; // Will create this component
+export const dynamic = 'force-dynamic';
+
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../components/ui/Card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/Table";
+import { Badge } from "../../components/ui/Badge";
+import { Progress } from "../../components/ui/Progress";
 import { Book, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 
 // Mock Data

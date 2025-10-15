@@ -1,11 +1,18 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
+  "/about/page": "app/about/page.js",
+  "/forgot-password/page": "app/forgot-password/page.js",
   "/api/ai-summary/route": "app/api/ai-summary/route.js",
-  "/login/page": "app/login/page.js",
+  "/contact/page": "app/contact/page.js",
+  "/privacy-policy/page": "app/privacy-policy/page.js",
+  "/signup/page": "app/signup/page.js",
   "/page": "app/page.js",
+  "/login/page": "app/login/page.js",
   "/dashboard/manager/page": "app/dashboard/manager/page.js",
+  "/reset-password/page": "app/reset-password/page.js",
+  "/dashboard/principal/page": "app/dashboard/principal/page.js",
   "/dashboard/teacher/page": "app/dashboard/teacher/page.js",
   "/dashboard/parent/page": "app/dashboard/parent/page.js",
   "/dashboard/admin/page": "app/dashboard/admin/page.js",
-  "/dashboard/principal/page": "app/dashboard/principal/page.js"
+  "/dashboard/student/page": "app/dashboard/student/page.js"
 }

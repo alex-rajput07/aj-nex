@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import React from 'react';
 import AssetTracking from './AssetTracking';
 import DashboardSkeleton from '@/components/DashboardSkeleton';

@@ -1,10 +1,11 @@
-// app/dashboard/admin/page.tsx
 "use client";
 
+export const dynamic = 'force-dynamic';
+
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/Card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/app/components/ui/Table";
-import { Badge } from "@/app/components/ui/Badge";
+import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/Card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/Table";
+import { Badge } from "../../components/ui/Badge";
 import { Users, BookOpen, DollarSign, ArrowUp } from 'lucide-react';
 
 // Mock data - in a real app, this would come from your database

@@ -7,15 +7,15 @@ import * as z from 'zod';
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { createClient } from '@/src/utils/supabase/client';
+import { createClient } from "@/utils/supabase/client";
 import { School, Mail, Lock, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Button } from '@/app/components/ui/Button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/app/components/ui/Card';
-import { Input } from '@/app/components/ui/Input';
-import { Label } from '@/app/components/ui/Label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/components/ui/Select';
-import { Alert, AlertDescription, AlertTitle } from '@/app/components/ui/Alert';
+import { Button } from "../components/ui/Button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/Card";
+import { Input } from "../components/ui/Input";
+import { Label } from "../components/ui/Label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/Select";
+import { Alert, AlertDescription, AlertTitle } from "../components/ui/Alert";
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }),

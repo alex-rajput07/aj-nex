@@ -1,9 +1,9 @@
 "use client";
 
-import { createClient } from "@/src/utils/supabase/client";
+import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/Avatar";
-import { Button } from "@/app/components/ui/Button";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar";
+import { Button } from "./ui/Button";
 import { 
     DropdownMenu, 
     DropdownMenuContent, 
@@ -12,7 +12,7 @@ import {
     DropdownMenuLabel, 
     DropdownMenuSeparator, 
     DropdownMenuTrigger 
-} from "@/app/components/ui/DropdownMenu";
+} from "./ui/DropdownMenu";
 
 export function UserNav({ user }: { user: any }) {
     const router = useRouter();

@@ -1,6 +1,6 @@
 // app/privacy-policy/page.tsx
-import Header from "@/app/components/Header";
-import Footer from "@/app/components/Footer";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 export default function PrivacyPolicyPage() {
     return (

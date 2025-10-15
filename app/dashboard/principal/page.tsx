@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import React from 'react';
 import TeacherPerformance from './TeacherPerformance';
 import DashboardSkeleton from '@/components/DashboardSkeleton';

@@ -1,8 +1,8 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { createClientSupabaseClient } from '@/utils/supabase/client';
-import LottieLoading from '@/components/LottieLoading';
-import DashboardSkeleton from '@/components/DashboardSkeleton';
+import { createClient } from "@/utils/supabase/client";
+import LottieLoading from "../../../src/components/LottieLoading";
+import DashboardSkeleton from "../../../src/components/DashboardSkeleton";
 
 interface Asset {
   id: number;
@@ -12,7 +12,7 @@ interface Asset {
 }
 
 const AssetTracking = () => {
-    const supabase = createClientSupabaseClient();
+    const supabase = createClient();
     const [assets, setAssets] = useState<Asset[]>([]);
     const [loading, setLoading] = useState(true);
 

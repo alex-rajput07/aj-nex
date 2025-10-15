@@ -1,8 +1,8 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { createClientSupabaseClient } from '@/utils/supabase/client';
-import DashboardSkeleton from '@/components/DashboardSkeleton';
-import FeedbackToast from '@/components/FeedbackToast';
+import { createClient } from "@/utils/supabase/client";
+import DashboardSkeleton from "../../../src/components/DashboardSkeleton";
+import FeedbackToast from "../../../src/components/FeedbackToast";
 
 interface PerformanceData {
   id: number;
@@ -12,7 +12,7 @@ interface PerformanceData {
 }
 
 const TeacherPerformance = () => {
-    const supabase = createClientSupabaseClient();
+    const supabase = createClient();
     const [loading, setLoading] = useState(true);
     const [performanceData, setPerformanceData] = useState<PerformanceData[]>([]);
     const [error, setError] = useState<string | null>(null);
