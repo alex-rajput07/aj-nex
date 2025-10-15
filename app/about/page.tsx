@@ -1,31 +1,34 @@
-import React from 'react';
-import { Users, School, TrendingUp } from 'lucide-react';
+// app/about/page.tsx
+import Header from "@/app/components/Header";
+import Footer from "@/app/components/Footer";
 
-const AboutPage = () => {
-  return (
-    <div className="bg-white p-8 rounded-lg shadow-md">
-      <h1 className="text-3xl font-bold mb-6 text-center">About AJ School ERP</h1>
-      <p className="text-center text-gray-600 mb-12">An integrated, user-friendly, and efficient solution for modern educational institutions.</p>
-
-      <div className="grid md:grid-cols-3 gap-8 text-center">
-        <div className="flex flex-col items-center">
-          <School size={48} className="text-blue-600 mb-4" />
-          <h2 className="text-2xl font-semibold mb-2">Our Mission</h2>
-          <p className="text-gray-700">To empower educational institutions with technology, simplifying administration and enhancing the learning experience for students, parents, and teachers.</p>
+export default function AboutPage() {
+    return (
+        <div className="flex flex-col min-h-screen">
+            <Header />
+            <main className="flex-grow container mx-auto px-4 py-12 md:py-20">
+                <div className="max-w-3xl mx-auto">
+                    <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">About AJ School ERP</h1>
+                    <p className="mt-6 text-xl text-muted-foreground">
+                        Founded in 2025 by Ajeet Singh (AJ), our mission is to provide an affordable, powerful, and user-friendly ERP system for educational institutions of all sizes. We believe in the power of technology to transform education and foster connected communities.
+                    </p>
+                    <div className="mt-10 prose prose-lg text-muted-foreground max-w-none">
+                        <p>
+                            AJ School ERP was born from a simple idea: school management software should be elegant, intuitive, and accessible to everyone. We saw too many schools struggling with outdated, complex systems that created more work instead of reducing it. We knew there had to be a better way.
+                        </p>
+                        <p>
+                            Our team is composed of passionate educators, developers, and designers dedicated to building a platform that addresses the real-world challenges faced by schools today. From seamless administrative workflows to real-time communication channels, every feature is designed with the user in mind.
+                        </p>
+                        <blockquote>
+                            <p>Our vision is a world where technology empowers educators to focus on what they do best: teaching and inspiring the next generation.</p>
+                        </blockquote>
+                        <p>
+                            We are committed to continuous improvement and innovation, working closely with our partner schools to ensure AJ School ERP not only meets but exceeds their expectations. Thank you for being a part of our journey.
+                        </p>
+                    </div>
+                </div>
+            </main>
+            <Footer />
         </div>
-        <div className="flex flex-col items-center">
-          <Users size={48} className="text-blue-600 mb-4" />
-          <h2 className="text-2xl font-semibold mb-2">For Everyone</h2>
-          <p className="text-gray-700">Designed with dedicated portals for every role: Administrators, Teachers, Students, and Parents, ensuring seamless communication and access to information.</p>
-        </div>
-        <div className="flex flex-col items-center">
-          <TrendingUp size={48} className="text-blue-600 mb-4" />
-          <h2 className="text-2xl font-semibold mb-2">Future Forward</h2>
-          <p className="text-gray-700">We are constantly innovating, leveraging the latest in web technology to deliver a reliable, scalable, and future-proof ERP system.</p>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default AboutPage;
+    );
+}

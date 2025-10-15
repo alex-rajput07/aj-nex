@@ -1,4 +1,4 @@
-// app/dashboard/teacher/layout.tsx
+// app/dashboard/student/layout.tsx
 import { createClient } from "@/src/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { Home, Calendar, BookOpen, MessageSquare } from "lucide-react";
@@ -6,7 +6,7 @@ import { Home, Calendar, BookOpen, MessageSquare } from "lucide-react";
 import DashboardLayout from "@/app/components/DashboardLayout";
 import { NavItem } from "@/app/components/Sidebar";
 
-export default async function TeacherDashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function StudentDashboardLayout({ children }: { children: React.ReactNode }) {
     const supabase = createClient();
 
     const { data, error } = await supabase.auth.getUser();
@@ -15,16 +15,16 @@ export default async function TeacherDashboardLayout({ children }: { children: R
     }
 
     const userRole = data.user.user_metadata?.role;
-    if (userRole !== 'teacher') {
+    if (userRole !== 'student') {
         redirect("/login"); 
     }
 
     const navItems: NavItem[] = [
-        { href: "/dashboard/teacher", label: "Dashboard", icon: <Home /> },
-        { href: "/dashboard/teacher/schedule", label: "My Schedule", icon: <Calendar />, disabled: true },
-        { href: "/dashboard/teacher/attendance", label: "Attendance", icon: <BookOpen />, disabled: true },
-        { href: "/dashboard/teacher/grades", label: "Grades", icon: <BookOpen />, disabled: true },
-        { href: "/dashboard/teacher/messages", label: "Messages", icon: <MessageSquare />, disabled: true },
+        { href: "/dashboard/student", label: "Dashboard", icon: <Home /> },
+        { href: "/dashboard/student/schedule", label: "My Schedule", icon: <Calendar />, disabled: true },
+        { href: "/dashboard/student/grades", label: "My Grades", icon: <BookOpen />, disabled: true },
+        { href: "/dashboard/student/assignments", label: "Assignments", icon: <BookOpen />, disabled: true },
+        { href: "/dashboard/student/messages", label: "Messages", icon: <MessageSquare />, disabled: true },
     ];
 
     return (

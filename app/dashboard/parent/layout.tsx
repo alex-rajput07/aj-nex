@@ -1,16 +1,34 @@
-import React from 'react';
+// app/dashboard/parent/layout.tsx
+import { createClient } from "@/src/utils/supabase/server";
+import { redirect } from "next/navigation";
+import { Home, User, Wallet, MessageSquare } from "lucide-react";
 
-const ParentLayout = ({ children }: { children: React.ReactNode }) => {
+import DashboardLayout from "@/app/components/DashboardLayout";
+import { NavItem } from "@/app/components/Sidebar";
+
+export default async function ParentDashboardLayout({ children }: { children: React.ReactNode }) {
+    const supabase = createClient();
+
+    const { data, error } = await supabase.auth.getUser();
+    if (error || !data?.user) {
+        redirect("/login");
+    }
+
+    const userRole = data.user.user_metadata?.role;
+    if (userRole !== 'parent') {
+        redirect("/login"); 
+    }
+
+    const navItems: NavItem[] = [
+        { href: "/dashboard/parent", label: "Dashboard", icon: <Home /> },
+        { href: "/dashboard/parent/children", label: "My Children", icon: <User />, disabled: true },
+        { href: "/dashboard/parent/fees", label: "Fee Payment", icon: <Wallet />, disabled: true },
+        { href: "/dashboard/parent/messages", label: "Messages", icon: <MessageSquare />, disabled: true },
+    ];
+
     return (
-        <div className="min-h-screen bg-gray-100">
-            <header className="bg-blue-600 text-white p-4">
-                <h1 className="text-xl font-bold">Parent Portal</h1>
-            </header>
-            <main className="p-4">
-                {children}
-            </main>
-        </div>
+        <DashboardLayout user={data.user} navItems={navItems}>
+            {children}
+        </DashboardLayout>
     );
-};
-
-export default ParentLayout;
+}

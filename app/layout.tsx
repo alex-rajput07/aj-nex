@@ -1,22 +1,28 @@
-import './globals.css';
-import React from 'react';
-import Header from './components/Header';
-import Footer from './components/Footer';
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { cn } from "@/src/utils/cn";
+import { ThemeProvider } from "./components/ThemeProvider";
 
-export const metadata = {
-  title: 'AJ School ERP',
-  description: 'School ERP - Dashboard for Admin/Teacher/Student/Parent',
+const fontSans = Inter({ subsets: ["latin"], variable: "--font-sans" });
+
+export const metadata: Metadata = {
+  title: "AJ School ERP",
+  description: "A modern, animated, and professional School ERP system.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="flex flex-col min-h-screen bg-gray-50">
-        <Header />
-        <main className="flex-grow container mx-auto px-4 py-8">
+    <html lang="en" suppressHydrationWarning>
+      <body className={cn("min-h-screen bg-background font-sans antialiased", fontSans.variable)}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           {children}
-        </main>
-        <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );

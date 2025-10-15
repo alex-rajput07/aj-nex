@@ -1,49 +1,54 @@
-// app/components/Sidebar.tsx
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Home, Calendar, BarChart2, MessageSquare, Settings } from 'lucide-react';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { School } from "lucide-react";
 
-const navItems = [
-  { name: 'Home', href: '', icon: Home },
-  { name: 'Attendance', href: '/attendance', icon: Calendar },
-  { name: 'Results', href: '/results', icon: BarChart2 },
-  { name: 'Messages', href: '/messages', icon: MessageSquare },
-  { name: 'Settings', href: '/settings', icon: Settings },
-];
+import { cn } from "@/src/utils/cn";
+import { Button } from "@/app/components/ui/Button";
 
-const Sidebar = ({ role }: { role: string }) => {
-  const pathname = usePathname();
-  const baseDashboardUrl = `/${role}-dashboard`;
+export interface NavItem {
+    href: string;
+    label: string;
+    icon: React.ReactNode;
+    disabled?: boolean;
+}
 
-  return (
-    <aside className="w-64 bg-white shadow-md flex-shrink-0">
-      <div className="p-4 border-b">
-        <h2 className="text-lg font-semibold text-gray-700 capitalize">{role} Menu</h2>
-      </div>
-      <nav className="p-2">
-        <ul>
-          {navItems.map((item) => {
-            const href = `${baseDashboardUrl}${item.href}`;
-            const isActive = pathname === href;
-            return (
-              <li key={item.name}>
-                <Link
-                  href={href}
-                  className={`flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-100 ${isActive ? 'bg-blue-100 text-blue-600 font-semibold' : ''}`}
-                >
-                  <item.icon size={20} />
-                  <span className="ml-3">{item.name}</span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
-    </aside>
-  );
-};
+interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
+    navItems: NavItem[];
+}
 
-export default Sidebar;
+export function Sidebar({ className, navItems }: SidebarProps) {
+    const pathname = usePathname();
+
+    return (
+        <div className={cn("hidden border-r bg-muted/40 md:block", className)}>
+            <div className="flex h-full max-h-screen flex-col gap-2">
+                <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+                    <Link href="/" className="flex items-center gap-2 font-semibold">
+                        <School className="h-6 w-6" />
+                        <span className="">AJ School ERP</span>
+                    </Link>
+                </div>
+                <div className="flex-1">
+                    <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+                        {navItems.map((item) => (
+                            <Link
+                                key={item.href}
+                                href={item.disabled ? "#" : item.href}
+                                className={cn(
+                                    "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
+                                    pathname === item.href && "bg-muted text-primary",
+                                    item.disabled && "cursor-not-allowed opacity-50"
+                                )}
+                            >
+                                {item.icon}
+                                {item.label}
+                            </Link>
+                        ))}
+                    </nav>
+                </div>
+            </div>
+        </div>
+    );
+}

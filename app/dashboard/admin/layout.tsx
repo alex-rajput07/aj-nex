@@ -1,19 +1,37 @@
-import React from 'react';
+// app/dashboard/admin/layout.tsx
+import { createClient } from "@/src/utils/supabase/server";
+import { redirect } from "next/navigation";
+import { Home, Users, Settings, BarChart } from "lucide-react";
 
-const AdminLayout = ({ children }: { children: React.ReactNode }) => {
+import DashboardLayout from "@/app/components/DashboardLayout";
+import { NavItem } from "@/app/components/Sidebar";
+
+export default async function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
+    const supabase = createClient();
+
+    const { data, error } = await supabase.auth.getUser();
+    if (error || !data?.user) {
+        redirect("/login");
+    }
+
+    // In a real app, you'd fetch the user's role from your database.
+    // For this example, we'll assume the role is in user_metadata.
+    const userRole = data.user.user_metadata?.role;
+    if (userRole !== 'admin') {
+        // Or redirect to a generic dashboard / error page
+        redirect("/login"); 
+    }
+
+    const navItems: NavItem[] = [
+        { href: "/dashboard/admin", label: "Dashboard", icon: <Home /> },
+        { href: "/dashboard/admin/users", label: "Manage Users", icon: <Users />, disabled: true },
+        { href: "/dashboard/admin/analytics", label: "Analytics", icon: <BarChart />, disabled: true },
+        { href: "/dashboard/admin/settings", label: "Settings", icon: <Settings />, disabled: true },
+    ];
+
     return (
-        <div className="flex flex-col min-h-screen">
-            <header className="bg-blue-600 text-white p-4">
-                <h1 className="text-xl font-bold">Admin Dashboard</h1>
-            </header>
-            <main className="flex-grow p-4">
-                {children}
-            </main>
-            <footer className="bg-gray-800 text-white p-4 text-center">
-                <p>&copy; {new Date().getFullYear()} AJ ERP. All rights reserved.</p>
-            </footer>
-        </div>
+        <DashboardLayout user={data.user} navItems={navItems}>
+            {children}
+        </DashboardLayout>
     );
-};
-
-export default AdminLayout;
+}
