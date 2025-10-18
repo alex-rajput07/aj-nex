@@ -6,10 +6,8 @@ DROP TABLE IF EXISTS fees, attendance, parents, students, teachers, users CASCAD
 
 -- USERS TABLE
 CREATE TABLE IF NOT EXISTS users (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  full_name TEXT NOT NULL,
-  email TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL,
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  full_name TEXT,
   role TEXT CHECK (role IN ('admin','teacher','student','parent')) NOT NULL,
   created_at TIMESTAMP DEFAULT NOW()
 );

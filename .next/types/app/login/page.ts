@@ -1,4 +1,4 @@
-// File: c:\Users\ajju2\OneDrive\Desktop\AJ\aj-erp\app\login\page.tsx
+// File: C:\Users\ajju2\OneDrive\Desktop\AJ\aj-erp\app\login\page.tsx
 import * as entry from '../../../../app/login/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

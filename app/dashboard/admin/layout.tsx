@@ -1,13 +1,15 @@
 // app/dashboard/admin/layout.tsx
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { Home, Users, Settings, BarChart } from "lucide-react";
 
 import DashboardLayout from "../../components/DashboardLayout";
-import { NavItem } from "@/app/components/Sidebar";
+import { NavItem } from "../../components/Sidebar";
 
 export default async function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
-    const supabase = createClient();
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
 
     const { data, error } = await supabase.auth.getUser();
     if (error || !data?.user) {

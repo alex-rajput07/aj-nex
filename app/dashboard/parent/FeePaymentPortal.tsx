@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { createClientSupabaseClient } from '@/utils/supabase/client';
+import { createClient } from '@/utils/supabase/client';
 import LottieLoading from '@/components/LottieLoading';
 import FeedbackToast from '@/components/FeedbackToast';
 
@@ -11,7 +11,7 @@ interface Fee {
 }
 
 const FeePaymentPortal = () => {
-    const supabase = createClientSupabaseClient();
+    const supabase = createClient();
     const [fees, setFees] = useState<Fee[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);

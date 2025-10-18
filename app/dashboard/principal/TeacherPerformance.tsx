@@ -1,8 +1,8 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { createClient } from "@/utils/supabase/client";
-import DashboardSkeleton from "../../../src/components/DashboardSkeleton";
-import FeedbackToast from "../../../src/components/FeedbackToast";
+import DashboardSkeleton from "@/components/DashboardSkeleton";
+import FeedbackToast from "@/components/FeedbackToast";
 
 interface PerformanceData {
   id: number;

@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { School } from "lucide-react";
 
 import { cn } from "@/utils/cn";
-import { Button } from "@/app/components/ui/Button";
+import { Button } from "./ui/Button";
 
 export interface NavItem {
     href: string;

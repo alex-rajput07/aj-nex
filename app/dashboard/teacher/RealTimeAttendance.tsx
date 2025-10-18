@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { createClientSupabaseClient } from '@/utils/supabase/client';
+import { createClient } from '@/utils/supabase/client';
 import LottieLoading from '@/components/LottieLoading';
 import FeedbackToast from '@/components/FeedbackToast';
 
@@ -11,7 +11,7 @@ interface Student {
 }
 
 const RealTimeAttendance = () => {
-  const supabase = createClientSupabaseClient();
+  const supabase = createClient();
   const [students, setStudents] = useState<Student[]>([]); // Assuming we fetch a list of students
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
