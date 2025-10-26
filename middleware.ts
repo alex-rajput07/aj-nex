@@ -11,10 +11,12 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
 
   const protectedPaths = [
-    '/admin-dashboard',
-    '/teacher-dashboard',
-    '/student-dashboard',
-    '/parent-dashboard'
+    '/dashboard/admin',
+    '/dashboard/teacher',
+    '/dashboard/student',
+    '/dashboard/parent',
+    '/dashboard/principal',
+    '/dashboard/manager'
   ];
 
   const isProtectedRoute = protectedPaths.some(path => request.nextUrl.pathname.startsWith(path));
@@ -29,7 +31,7 @@ export async function middleware(request: NextRequest) {
     // get user role from profiles table
     const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
     if (profile) {
-        return NextResponse.redirect(new URL(`/${profile.role}-dashboard`, request.url));
+        return NextResponse.redirect(new URL(`/dashboard/${profile.role}`, request.url));
     }
     // if no profile, maybe redirect to a profile setup page or homepage
     return NextResponse.redirect(new URL('/', request.url));

@@ -120,7 +120,7 @@ export default function HomePage() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: 0.2 }}
                     className="h-80 bg-cover bg-center rounded-lg shadow-xl"
-                    style={{backgroundImage: 'url(/about-us.jpg)'}}
+                    style={{backgroundImage: 'url(https://placehold.co/600x400)'}}
                 >
                 </motion.div>
             </div>
