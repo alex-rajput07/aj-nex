@@ -1,5 +1,5 @@
-// app/forgot-password/page.tsx
 'use client';
+// app/forgot-password/page.tsx
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
