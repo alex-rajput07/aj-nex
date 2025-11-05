@@ -1,4 +1,5 @@
-"use client";
+'use client';
+
 export const dynamic = 'force-dynamic';
 
 // app/dashboard/teacher/page.tsx
